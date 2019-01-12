@@ -1,0 +1,22 @@
+server {
+    # nginx listens to this
+    listen 443 ssl;
+    server_name {{ xandikos_subdomain }}.{{ domain }};
+
+    auth_basic "Please provide your credentials";
+    auth_basic_user_file {{ nginx.paths.basic_auth }};
+
+    include ssl/common.conf;
+
+    location / {
+        root {{ xandikos_home }};
+        uwsgi_pass unix:{{ xandikos_uwsgi_socket }};
+        include uwsgi_params;
+    }
+
+    include error_pages.conf;
+    include common.conf;
+
+    #access_log /var/log/nginx/{{ xandikos_subdomain }}/access.log;
+    #error_log /var/log/nginx/{{ xandikos_subdomain }}/error.log;
+}

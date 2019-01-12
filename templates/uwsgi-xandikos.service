@@ -1,0 +1,19 @@
+[Unit]
+Description=uWSGI service for Xandikos
+After=syslog.target
+After=uwsgi-xandikos.socket
+
+[Service]
+ExecStart=/usr/bin/uwsgi \
+        --ini {{ xandikos_ini_file }} \
+        --socket /var/run/uwsgi/xandikos.socket
+User={{ xandikos_user }}
+Group={{ xandikos_user }}
+Restart=on-failure
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

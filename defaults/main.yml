@@ -1,0 +1,16 @@
+---
+xandikos_user: xandikos
+xandikos_home: /home/{{ xandikos_user }}
+xandikos_data_dir: "{{ xandikos_home }}/dav"
+xandikos_ini_file: "{{ xandikos_home }}/uwsgi.ini"
+xandikos_uwsgi_socket: /var/run/uwsgi/xandikos.socket
+xandikos_port: 50002
+
+xandikos_apt_packages:
+  - python3-dev
+  - uwsgi
+  - uwsgi-plugin-python3
+
+xandikos_client_user: "{{ admin.user }}"
+
+xandikos_subdomain: calserver

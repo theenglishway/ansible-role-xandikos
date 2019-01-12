@@ -1,0 +1,10 @@
+---
+- name: Start Xandikos service
+  become: yes
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  loop:
+    - uwsgi-xandikos.socket
+    - uwsgi-xandikos.service

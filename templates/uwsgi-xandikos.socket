@@ -1,0 +1,11 @@
+[Unit]
+Description=uWSGI Socket for Xandikos
+
+[Socket]
+ListenStream=/var/run/uwsgi/xandikos.socket
+SocketUser={{ xandikos_user }}
+SocketGroup=www-data
+SocketMode=0660
+
+[Install]
+WantedBy=sockets.target

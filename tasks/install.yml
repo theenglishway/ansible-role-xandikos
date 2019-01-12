@@ -1,0 +1,46 @@
+---
+- name: Create specific user {{ xandikos_user }}
+  become: yes
+  user:
+    name: "{{ xandikos_user }}"
+    home: "{{ xandikos_home }}"
+    password: "{{ xandikos_user | password_hash('sha256') }}"
+    append: true
+    groups: www-data
+    state: present
+
+- name: Install dependencies {{ xandikos_apt_packages | join(',') }}
+  become: yes
+  apt:
+    name: "{{ xandikos_apt_packages }}"
+    state: present
+
+- name: Install Xandikos
+  become: yes
+  become_user: "{{ xandikos_user }}"
+  command: python3 -m pip install --user --upgrade xandikos
+  args:
+    creates: "{{ xandikos_home }}/.local/bin/xandikos"
+
+- name: Copy uwsgi .ini file
+  become: yes
+  become_user: "{{ xandikos_user }}"
+  template:
+    src: templates/uwsgi.ini
+    dest: "{{ xandikos_ini_file }}"
+
+- name: Create data directory
+  become: yes
+  become_user: "{{ xandikos_user }}"
+  file:
+    dest: "{{ xandikos_data_dir }}"
+    state: directory
+
+- name: Install systemd service files
+  become: yes
+  template:
+    dest: /etc/systemd/system
+    src: templates/{{ item }}
+  loop:
+    - uwsgi-xandikos.service
+    - uwsgi-xandikos.socket
